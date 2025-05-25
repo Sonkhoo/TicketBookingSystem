@@ -46,12 +46,20 @@ public class UserBookingService {
             }
      }
 
-    public boolean Login(String userId, String password) {
-        Optional<User> user = userList.stream().filter(u -> u.getUserId().equals(userId) && u.getPassword().equals(password)).findFirst();
-        if (user.isPresent()) {
-            return true;
-        } else {
+    public boolean Login() {
+        Optional<User> foundUser = userList.stream().filter(user1 -> {
+            return user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
+        }).findFirst();
+        return foundUser.isPresent();
+    }
+
+    public boolean Signup(User user) {
+        Optional<User> newUser = userList.stream().filter(u -> u.getName().equals(user.getName())).findFirst();
+        if (newUser.isPresent()) {
             return false;
+        } else {
+            userList.add(user);
+            return true;
         }
     }
 }
